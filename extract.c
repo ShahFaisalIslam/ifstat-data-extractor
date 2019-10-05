@@ -1,6 +1,7 @@
 //This program will extract all data from the ifstat command and save them
-//Current version: 1.4
+//Current version: 1.5
 //History;
+//-->1.5: stores name too
 //-->1.4: extracts the numbers and stores them in float array
 //-->1.3: extracts the numbers and stores them in two string arrays
 //-->1.2: fetches first line of output
@@ -18,6 +19,8 @@
 #define COMM_SIZE 13
 #define INOUT 2
 #define MAX_NUM_SIZE 8 //xxxx.xx\0
+#define NAME_SIZE 31
+
 
 struct timeval start,end;
 
@@ -25,6 +28,8 @@ struct timeval start,end;
 int main()
 {
 	FILE *ifstatCaller; //This will call ifstat command
+
+	char net_name[NAME_SIZE];
 
 	char inout[INOUT][MAX_NUM_SIZE];
 	double inout_n[INOUT];
@@ -38,19 +43,22 @@ int main()
 	ifstatCaller = popen(command,"r");//calling the command
 
 
-	gettimeofday(&start,NULL);
+gettimeofday(&start,NULL);
 
 	char* success = fgets(buff,BUFF_SIZE,ifstatCaller);//getting string
 
 	if (success != NULL)
 	{
 		buff = realloc(buff,strlen(buff)+1);//memory optimization
-		printf("String obtained: %s",buff);//outputting the result
+//		printf("String obtained: %s",buff);//outputting the result
 
 
 		char *name = strtok(buff," ");
 		if (name != NULL)
-			printf("Name Extracted:%s\n",name);
+			{
+				strcpy(net_name,name);
+				printf("Name Extracted:%s\n",net_name);
+			}
 		name = NULL;
 		fgets(buff,BUFF_SIZE,ifstatCaller);//ignores the next line that has KB
 //		printf("String obtained: %s",buff);//outputting the result
@@ -77,7 +85,7 @@ int main()
 	else
 		printf("String not obtained\n");
 
-	gettimeofday(&end,NULL);
+gettimeofday(&end,NULL);
 
 
 	pclose(ifstatCaller);
