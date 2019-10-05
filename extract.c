@@ -1,5 +1,5 @@
 //This program will extract all data from the ifstat command and save them
-//Current version: 1.0
+//Current version: 1.1
 //History;
 //-->1.1: ignores the next line of KB/s
 //-->1.0: extracts only name using strtok()
