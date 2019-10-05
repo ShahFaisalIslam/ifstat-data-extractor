@@ -1,6 +1,7 @@
 //This program will extract all data from the ifstat command and save them
-//Current version: 1.2
+//Current version: 1.3
 //History;
+//-->1.3: extracts the numbers and stores them in two string arrays
 //-->1.2: fetches first line of output
 //-->1.1: ignores the next line of KB/s
 //-->1.0: extracts only name using strtok()
@@ -14,7 +15,8 @@
 
 #define BUFF_SIZE 300
 #define COMM_SIZE 13
-
+#define INOUT 2
+#define MAX_NUM_SIZE 8 //xxxx.xx\0
 
 struct timeval start,end;
 
@@ -23,9 +25,11 @@ int main()
 {
 	FILE *ifstatCaller; //This will call ifstat command
 
+	char inout[INOUT][MAX_NUM_SIZE];
 
 	char *buff;//keeping it dynamic
 	buff = calloc(BUFF_SIZE,sizeof(char));
+
 
 	char command[] = "ifstat 0.1 1";
 
@@ -53,8 +57,15 @@ int main()
 		char *update = fgets(buff,BUFF_SIZE,ifstatCaller);
 
 		if( update != NULL )
-			printf("String obtained: %s",buff);//outputting the result
+		{
+			update = strtok(update," ");
+			strcpy(inout[0],update);
 
+			update = strtok(NULL," ");
+			strcpy(inout[1],update);
+
+			printf("Update 1: %s %s\n",inout[0],inout[1]);//outputting the result
+		}
 
 		update = NULL;
 		success = NULL;
