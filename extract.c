@@ -1,6 +1,7 @@
 //This program will extract all data from the ifstat command and save them
 //Current version: 1.0
 //History;
+//-->1.1: ignores the next line of KB/s
 //-->1.0: extracts only name using strtok()
 
 
@@ -20,6 +21,7 @@ struct timeval start,end;
 int main()
 {
 	FILE *ifstatCaller; //This will call ifstat command
+
 
 	char *buff;//keeping it dynamic
 	buff = calloc(BUFF_SIZE,sizeof(char));
@@ -43,6 +45,18 @@ int main()
 		if (name != NULL)
 			printf("Name Extracted:%s\n",name);
 		name = NULL;
+		fgets(buff,BUFF_SIZE,ifstatCaller);//ignores the next line that has KB
+		printf("String obtained: %s",buff);//outputting the result
+
+
+		char *update = fgets(buff,BUFF_SIZE,ifstatCaller);
+
+		if( update != NULL )
+			printf("String obtained: %s",buff);//outputting the result
+
+
+		update = NULL;
+		success = NULL;
 	}
 	else
 		printf("String not obtained\n");
@@ -61,7 +75,7 @@ int main()
 	int seconds = end.tv_sec - start.tv_sec;
 	long time = (seconds*1e6) + end.tv_usec - start.tv_usec;
 
-	printf("\n-----Time elapsed in function: %ld microseconds-----\n",time);
+	printf("\n-----Time elapsed in main execution: %ld microseconds-----\n",time);
 }
 
 
