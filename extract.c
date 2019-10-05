@@ -1,6 +1,8 @@
 //This program will extract all data from the ifstat command and save them
 //Current version: 1.7.2
 //History;
+//-->1.7.5: Moved the file generating block such that it requires success in extracting results
+//-->1.7.4: Removed the feature of storing bandwidths as numbers
 //-->1.7.3: Renamed dev_name to interface_name, to reflect the nature of the variable
 //-->1.7.2: Converted buffer into a character array
 //-->1.7.1: Removed the reallocation of buffer, as the next line could be greater in size. in other words
@@ -52,7 +54,7 @@ gettimeofday(&start,NULL);
 	char interface_name[NAME_SIZE];
 
 	char inout[INOUT][MAX_NUM_SIZE];
-	double inout_n[INOUT];
+//for a future update	double inout_n[INOUT];
 
 	char buff[BUFF_SIZE];
 
@@ -85,7 +87,6 @@ gettimeofday(&start,NULL);
 		else
 		{
 			printf("Error in extracting the name\n");
-			return 0;
 		}
 		name = NULL;
 		fgets(buff,BUFF_SIZE,ifstatCaller);//ignores the next line that has KB
@@ -99,7 +100,7 @@ gettimeofday(&start,NULL);
 		{
 			update = strtok(update," ");
 			strcpy(inout[0],update);
-			inout_n[0] = strtod(update,NULL);
+//for a future update			inout_n[0] = strtod(update,NULL);
 
 			update = strtok(NULL," ");
 			strcpy(inout[1],update);
@@ -110,64 +111,67 @@ gettimeofday(&start,NULL);
 			newline = NULL;
 //end of optimization
 
-			inout_n[1] = strtod(update,NULL);
+//for a future update			inout_n[1] = strtod(update,NULL);
 
-			//printf("Update 1: %.2f %.2f\n",inout_n[0],inout_n[1]);//outputting the result
+			//printf("Update 1: %s %s\n",inout[0],inout[1]);//outputting the result
+//creating filenames
+			char *in_filename;
+			char *out_filename;
+
+			in_filename=calloc(strlen(interface_name)+strlen("_in"),sizeof(char));
+			out_filename=calloc(strlen(interface_name)+strlen("_out"),sizeof(char));
+
+			strcpy(in_filename,interface_name);
+			strcat(in_filename,"_in");
+
+			strcpy(out_filename,interface_name);
+			strcat(out_filename,"_out");
+
+
+//accessing and storing data in files
+			FILE *in_file;
+			FILE *out_file;
+
+			in_file=fopen(in_filename,"w");
+			out_file=fopen(out_filename,"w");
+
+			int success_in =fputs(inout[0],in_file);
+			int success_out =fputs(inout[1],out_file);
+
+			if (success_in == 0)
+				printf("Failed to write \"in\"\n");
+			if (success_out == 0)
+				printf("Failed to write \"out\"\n");
+
+
+//closing files
+			free(in_filename);
+			in_filename=NULL;
+
+			free(out_filename);
+			out_filename=NULL;
+
+
+			fclose(in_file);
+			in_file=NULL;
+
+			fclose(out_file);
+			out_file=NULL;
+		}
+		else
+		{
+			printf("Error in extracting bandwidth\n");
 		}
 
 		update = NULL;
 		success = NULL;
 
 
-//creating filenames
-		char *in_filename;
-		char *out_filename;
-
-		in_filename=calloc(strlen(interface_name)+strlen("_in"),sizeof(char));
-		out_filename=calloc(strlen(interface_name)+strlen("_out"),sizeof(char));
-
-		strcpy(in_filename,interface_name);
-		strcat(in_filename,"_in");
-
-		strcpy(out_filename,interface_name);
-		strcat(out_filename,"_out");
-
-
-//accessing and storing data in files
-		FILE *in_file;
-		FILE *out_file;
-
-		in_file=fopen(in_filename,"w");
-		out_file=fopen(out_filename,"w");
-
-		int success_in =fputs(inout[0],in_file);
-		int success_out =fputs(inout[1],out_file);
-
-		if (success_in == 0)
-			printf("Failed to write \"in\"\n");
-		if (success_out == 0)
-			printf("Failed to write \"out\"\n");
-
-
-//closing files
-		free(in_filename);
-		in_filename=NULL;
-
-		free(out_filename);
-		out_filename=NULL;
-
-
-		fclose(in_file);
-		in_file=NULL;
-
-		fclose(out_file);
-		out_file=NULL;
 
 	}
 	else//if command does not work
 	{
 		printf("Unable to execute the command\n");
-		return 0;
 	}
 
 
