@@ -1,6 +1,7 @@
 //This program will extract all data from the ifstat command and save them
-//Current version: 1.3
+//Current version: 1.4
 //History;
+//-->1.4: extracts the numbers and stores them in float array
 //-->1.3: extracts the numbers and stores them in two string arrays
 //-->1.2: fetches first line of output
 //-->1.1: ignores the next line of KB/s
@@ -26,6 +27,7 @@ int main()
 	FILE *ifstatCaller; //This will call ifstat command
 
 	char inout[INOUT][MAX_NUM_SIZE];
+	double inout_n[INOUT];
 
 	char *buff;//keeping it dynamic
 	buff = calloc(BUFF_SIZE,sizeof(char));
@@ -60,11 +62,13 @@ int main()
 		{
 			update = strtok(update," ");
 			strcpy(inout[0],update);
+			inout_n[0] = strtod(update,NULL);
 
 			update = strtok(NULL," ");
 			strcpy(inout[1],update);
+			inout_n[1] = strtod(update,NULL);
 
-			printf("Update 1: %s %s\n",inout[0],inout[1]);//outputting the result
+			printf("Update 1: %.2f %.2f\n",inout_n[0],inout_n[1]);//outputting the result
 		}
 
 		update = NULL;
