@@ -1,6 +1,7 @@
 //This program will extract all data from the ifstat command and save them
 //Current version: 1.7.2
 //History;
+//-->1.7.3: Renamed dev_name to interface_name, to reflect the nature of the variable
 //-->1.7.2: Converted buffer into a character array
 //-->1.7.1: Removed the reallocation of buffer, as the next line could be greater in size. in other words
 //-->1.7:   user can input delay of their choice
@@ -48,7 +49,7 @@ int main(int argc, char* argv[])
 gettimeofday(&start,NULL);
 	FILE *ifstatCaller; //This will call ifstat command
 
-	char net_name[NAME_SIZE];
+	char interface_name[NAME_SIZE];
 
 	char inout[INOUT][MAX_NUM_SIZE];
 	double inout_n[INOUT];
@@ -78,8 +79,8 @@ gettimeofday(&start,NULL);
 		char *name = strtok(buff," ");
 		if (name != NULL)
 			{
-				strcpy(net_name,name);
-				//printf("Name Extracted:%s\n",net_name);
+				strcpy(interface_name,name);
+				//printf("Name Extracted:%s\n",interface_name);
 			}
 		name = NULL;
 		fgets(buff,BUFF_SIZE,ifstatCaller);//ignores the next line that has KB
@@ -117,13 +118,13 @@ gettimeofday(&start,NULL);
 		char *in_filename;
 		char *out_filename;
 
-		in_filename=calloc(strlen(net_name)+strlen("_in"),sizeof(char));
-		out_filename=calloc(strlen(net_name)+strlen("_out"),sizeof(char));
+		in_filename=calloc(strlen(interface_name)+strlen("_in"),sizeof(char));
+		out_filename=calloc(strlen(interface_name)+strlen("_out"),sizeof(char));
 
-		strcpy(in_filename,net_name);
+		strcpy(in_filename,interface_name);
 		strcat(in_filename,"_in");
 
-		strcpy(out_filename,net_name);
+		strcpy(out_filename,interface_name);
 		strcat(out_filename,"_out");
 
 
