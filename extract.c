@@ -82,6 +82,11 @@ gettimeofday(&start,NULL);
 				strcpy(interface_name,name);
 				//printf("Name Extracted:%s\n",interface_name);
 			}
+		else
+		{
+			printf("Error in extracting the name\n");
+			return 0;
+		}
 		name = NULL;
 		fgets(buff,BUFF_SIZE,ifstatCaller);//ignores the next line that has KB
 		//printf("String obtained: %s",buff);//outputting the result
