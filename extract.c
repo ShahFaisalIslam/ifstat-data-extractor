@@ -47,7 +47,7 @@ int main()
 			printf("Name Extracted:%s\n",name);
 		name = NULL;
 		fgets(buff,BUFF_SIZE,ifstatCaller);//ignores the next line that has KB
-		printf("String obtained: %s",buff);//outputting the result
+//		printf("String obtained: %s",buff);//outputting the result
 
 
 		char *update = fgets(buff,BUFF_SIZE,ifstatCaller);
